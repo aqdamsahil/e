@@ -1,0 +1,143 @@
+{
+  "entities": {
+    "Poster": {
+      "title": "Poster",
+      "description": "A high-resolution poster artwork uploaded for public viewing and downloading",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the poster",
+          "maxLength": 128
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the poster",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description or artist notes",
+          "maxLength": 1000
+        },
+        "category": {
+          "type": "string",
+          "description": "Category name for filtering and organization",
+          "minLength": 2,
+          "maxLength": 50
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Public URL or cloud storage URL of the poster image",
+          "maxLength": 2048
+        },
+        "storagePath": {
+          "type": "string",
+          "description": "Cloud storage path of the original image",
+          "maxLength": 500
+        },
+        "fileFormat": {
+          "type": "string",
+          "description": "File format of the poster (JPG, JPEG, PNG, WEBP)",
+          "enum": ["JPG", "JPEG", "PNG", "WEBP"]
+        },
+        "fileSize": {
+          "type": "number",
+          "description": "File size in bytes"
+        },
+        "published": {
+          "type": "boolean",
+          "description": "Whether the poster is published publicly or saved as a draft"
+        },
+        "downloadCount": {
+          "type": "number",
+          "description": "Number of times this poster has been downloaded"
+        },
+        "uploaderId": {
+          "type": "string",
+          "description": "UID of the admin who uploaded the poster",
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the poster was created"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the poster was last updated"
+        }
+      },
+      "required": ["id", "title", "category", "imageUrl", "published", "downloadCount", "createdAt"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Category for organizing posters",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Category slug / unique ID",
+          "maxLength": 64
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the category",
+          "minLength": 2,
+          "maxLength": 50
+        },
+        "description": {
+          "type": "string",
+          "description": "Short description of the category",
+          "maxLength": 300
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when category was added"
+        }
+      },
+      "required": ["id", "name"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Authorized administrator document",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "User UID matching auth.uid",
+          "maxLength": 128
+        },
+        "email": {
+          "type": "string",
+          "description": "Administrator email address",
+          "maxLength": 128
+        },
+        "role": {
+          "type": "string",
+          "description": "User role",
+          "enum": ["admin"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp of admin creation"
+        }
+      },
+      "required": ["uid", "role"]
+    }
+  },
+  "firestore": {
+    "/posters/{posterId}": {
+      "schema": "Poster",
+      "description": "Collection of all posters. Published posters are publicly readable. Admins have full access."
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Publicly readable collection of categories. Admins can create and delete."
+    },
+    "/admins/{adminId}": {
+      "schema": "Admin",
+      "description": "Restricted admin role registry. Read/write only by verified admins."
+    }
+  }
+}
